@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="utf-8">
+                            <title>brev.at - URL Shortener</title>
+                            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+							<link rel="preconnect" href="https://fonts.gstatic.com">
+							<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+							<link   rel="shortcut icon" 
+  type="image/icon" 
+  href="https://shorturlimages.s3-sa-east-1.amazonaws.com/favicon.ico"
+>  
+							<script type="text/javascript">
+							
+							function CopyClipboard() {
+							
+							var text = $('#url_short').text();
+							
+							navigator.clipboard.writeText(text);
+							
+							$('.copyIcon').hide();
+							
+							$('.copyTxt').text('Copied!');
+							
+							$('.copyTxt').css('cursor','default');
+							
+							}
+							
+							$(document).ready(function() {
+							
+									$('form#submit').submit(function(event) {
+														
+											url_long = $('#url_input').val()
+											
+											// start workflow
+											$.ajax({
+												type        : 'POST',
+												url         : '/shorturl',
+												data        : '{ "url": "' + url_long + '"}',
+												contentType : 'application/json; charset=utf-8',
+												dataType    : 'json',
+												encode      : true
+											})
+											.done(function(data,textStatus, jqXHR) {
+											
+												$('#url_input_submit').prop('disabled', false);
+												
+												if (data.error) {
+													$('#url-group').addClass('has-error'); // add the error class to show red input
+													$('#url-error').show().text(data.error); // add the actual error message under our input
+												} else {
+													$('form#result').fadeIn();        // and show the one used to display the results
+													
+													$('#url_short').focus().select();
+													
+													response = 'brev.at/' + data['id']
+													
+													$('#url_input').val('');
+													$('#url_short').text(response);
+													
+												}
+											})
+											.fail(function(_, _, errorThrown) {
+												$('#url_input_submit').prop('disabled', false);
+												$('#url-group').addClass('has-error'); // add the error class to show red input
+												$('#url-error').show().text("Server error: "+errorThrown); // add the actual error message under our input
+											});
+											
+											// stop the form from submitting the normal way and refreshing the page
+											event.preventDefault();
+									});
+
+									
+
+                            });
+							
+							</script>
+							</head>
+                        <body>
+						
+						<div id="main" class="col-md-9">
+						
+						<div id="header" class="col-md-12"> 
+						
+						<div id="logo" class="col-md-2"><img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/logo.png" /></div>
+						<div id="spacer" class="col-md-8"></div>
+						<div id="menu" class="col-md-2"><a href="https://www.linkedin.com/in/tavaresr/" class="btnupper" target="_new">Get in Touch</a></div>
+						
+						</div>
+						
+						<div id="shorten" class="text-center">
+						
+						<h1>Brev - Free URL Shortener</h1>
+						<p>Brev is a free, serverless and highly-avaialble web application to create short urls and facilitate link sharing.</p>
+						</div>
+						
+						<div class="col-md-8" id="shortform">
+						
+						<form id="result" style="display:none">
+                                <div class="alert alert-success">
+								<label for="name"> <span id="url_short"></span> </label> 
+								
+								<div id="copy">
+								<span id="clickCopy" onclick="CopyClipboard()"><img class="copyIcon" src="https://img.icons8.com/material-rounded/20/000000/copy.png"><span class="copyTxt">Copy to Clipboard</span></span>
+	</div>
+									</div>
+                            </form>
+							
+							
+						<form id="submit">
+                                <div id="url-group" class="form-group">
+                                    <input type="url" required class="form-control" name="url" placeholder="Paste long URL" id="url_input">
+                                    <div class="help-block" style="display: none" id="url-error"></div>
+                                </div>
+								
+								<div id="sbmt-btn">
+                                <button type="submit" class="btn btn-success" id="url_input_submit">Abbreviate!</button>
+								</div>
+
+                        </form>
+						
+						</div>
+						
+						<div id="mini-menu" class="text-center"><a class="linkbtn" href="# target="_new">Architecture Diagram</a></div>
+						
+										
+						</div>
+						
+						
+						<div id="about" class="col-md-12">
+						
+						<div class="section-divider text-center"> 
+						
+						<img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/triangle-down.gif" style="width: 33px; margin-top: -17px; margin-right: -3px; " /> 
+						<img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/triangle-down.gif" style="    width: 45px; ">
+						<img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/triangle-down.gif" style="    width: 33px;    margin-top: -17px;">
+						</div>
+
+						
+						<div id="about-wrapper" class="col-md-9"> 
+						<div id="about-title" class="text-center">ABOUT BREV</div>
+						<div class=" reason col-md-4 text-center"><div class="icone"><img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/convenient.png" /></div> <p class="title">Convenient</p><p class="text">SEO-friendly and custom URLs for quick and easy sharing.</p></div>
+						<div class="reason col-md-4 text-center"><div class="icone"><img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/cost-free.png" /></div> <p class="title">Cost-Free</p><p class="text">Create short links with no hidden fees or usage plans.</p></div>
+						<div class="reason col-md-4 text-center"><div class="icone"><img src="https://shorturlimages.s3-sa-east-1.amazonaws.com/serverless.png" /></div> <p class="title">Serverless</p><p class="text">Highly-available architecture built on Amazon Web Services.</p></div>
+						
+						</div>
+						
+						</div>
+						
+						<div id="footer" class="col-md-12 text-center">2021 © brev.at &nbsp;&nbsp;|&nbsp;&nbsp; All Rights Reserved &nbsp;&nbsp;|&nbsp;&nbsp; by <a href="https://www.linkedin.com/in/tavaresr/" target="_new"> Raul Tavares</a></div>
+						
+						</body>
+						
+							<style type="text/css">
+							
+							body { background-color:#334552; font-family: 'Source Sans Pro', sans-serif; }
+							
+							
+							#main {float:none; margin: 0 auto;}
+							
+							#header {
+    margin-top: 20px;
+    float: none;
+    overflow: hidden;	
+	margin-bottom: 30px;
+}
+
+							#logo { text-align:center; margin-bottom:15px; height: 35px; }
+							#logo img { width: 100px;
+    height: auto; }
+							#menu { text-align:center; height: 35px;
+    line-height: 35px; }
+							
+							.btnupper { padding: 10px 20px;
+    background: #00a698;
+    color: white;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 12px; }
+	
+	.btnupper:hover {
+    background: #028a7e;
+    text-decoration: none;
+    color: white;
+}
+							#shorten {padding: 10px 0 40px 0; color: white;}
+							
+							#shorten h1 {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 700;
+}
+							
+							#shortform { float: none;    margin: 0 auto; overflow:hidden;     margin-bottom: 40px; }
+							
+							.alert-success {
+    border: 0;
+}
+
+							#url-group {     width: 77%;     margin: 0;    float: left; }
+							
+							#url_input { border-top-right-radius: 0;    border-bottom-right-radius: 0;  border: none; height: 40px; border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px; background: url('https://shorturlimages.s3-sa-east-1.amazonaws.com/bg.gif') no-repeat scroll 12px 12px;
+    background-color: white;
+    padding-left: 35px;  }
+							
+							#sbmt-btn {    float: left;    width: 23%;  }
+							
+							.btn-success { border-bottom-left-radius: 0;    border-top-left-radius: 0;  border: none; width: 100%; line-height:28px; border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px; font-weight: 700; background-color: #ffbf00; }
+	
+	.btn-success:hover {
+    background-color: #fda50f;
+}
+	
+	div#mini-menu {
+    margin-bottom: 60px;
+}
+							.linkbtn { background: #273742;
+    text-decoration: none;
+    color: white;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 3px;
+}
+
+.linkbtn:hover {
+    background: #1f282f;
+    text-decoration: none;
+    color: white;
+}
+							#about {background: white; }
+							
+							#about-title {
+    font-size: 20px;
+    letter-spacing: 2px;
+    font-weight: 900;
+    margin-bottom: 35px;
+    color: #334552;
+}
+							
+							#about-wrapper {    float: none;     margin: 0 auto;  overflow: hidden;}
+							
+							.section-divider {margin-bottom:25px; }
+							
+							.icone img {    width: 90px; }
+							
+														p.title {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+p.text {
+    width: 70%;
+    margin: 0 auto;
+	font-size: 15px;
+}
+							.reason {
+    margin-bottom: 50px;
+}
+							
+							 #footer {
+    background: #171d21;
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+#footer a { text-decoration: none;
+    color: #00a698; }
+	
+	#footer a:hover { color: #FFF; }
+	
+	#copy { float: right; }
+	
+	#clickCopy img {
+    float: left;
+    margin-right: 4px;
+}
+	.copyTxt {
+	float: right;
+    font-size: 12px;
+    line-height: 22px;
+    color: #334552;
+	cursor: pointer;
+	}
+
+							
+							</style>
+							
+                        </html>
