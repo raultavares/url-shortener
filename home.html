@@ -13,6 +13,16 @@
 >  
 							<script type="text/javascript">
 							
+							function checkURL (urlInp) {
+  var string = urlInp.value;
+  if (!~string.indexOf("https")) {
+    string = "https://" + string;
+  }
+  urlInp.value = string;
+  return urlInp
+}
+
+							
 							function CopyClipboard() {
 							
 							var text = $('#url_short').text();
@@ -110,7 +120,7 @@
 							
 						<form id="submit">
                                 <div id="url-group" class="form-group">
-                                    <input type="url" required class="form-control" name="url" placeholder="Paste long URL" id="url_input">
+                                    <input type="url" required class="form-control" name="url" onblur="checkURL(this)" placeholder="Paste long URL" id="url_input">
                                     <div class="help-block" style="display: none" id="url-error"></div>
                                 </div>
 								
